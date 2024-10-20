@@ -1,8 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import crypto from "node:crypto";
-globalThis.crypto ??= crypto.webcrypto;
 
 // Load environment variables
 dotenv.config({ path: "./.env" });
@@ -14,9 +12,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// //Initialize Route
-// import initRouter from "./routes/api/v1/init.js";
-// app.use("/api/v1/init", initRouter);
+//Initialize Route
+import deployRouter from "./routes/deploy.js";
+app.use("/api/deploy", deployRouter);
 
 // Listen for requests
 app.listen(PORT, () => {
