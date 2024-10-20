@@ -16,6 +16,10 @@ app.use(express.json());
 import deployRouter from "./routes/deploy.js";
 app.use("/api/deploy", deployRouter);
 
+//Transfer Route
+import transferRouter from "./routes/transfer.js";
+app.use("/api/transfer", transferRouter);
+
 // Listen for requests
 app.listen(PORT, () => {
   console.log(`Sigma Backend is running on port ${PORT}`);
