@@ -1,8 +1,10 @@
 import express from "express";
 import {
+  getMultiToSingleTransferEstimates,
   getSingleToMultiTransferEstimates,
   getTransferLocalEstimates,
 } from "../utils/estimate.js";
+import { getChain } from "../utils/helper.js";
 const router = express.Router();
 
 router.post("/local/:chainId", async (req, res) => {
@@ -104,6 +106,81 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
       tos,
       amounts,
       destchains,
+      deadline,
+      signature
+    );
+
+    res.json({
+      success: true,
+      gasEstimate,
+      gasPrice,
+      ethGas,
+      baseGas,
+      estimateFees,
+      hopFees,
+      hopUSDCFees,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+router.post("/multiToSingle/:chainId", async (req, res) => {
+  try {
+    const { chainId } = req.params;
+
+    const {
+      SigmaUSDCVault,
+      SigmaHop,
+      from,
+      to,
+      amounts,
+      srcChains,
+      destChain,
+      nonces,
+      deadline,
+      signature,
+    } = req.body;
+
+    if (
+      !SigmaUSDCVault ||
+      !SigmaHop ||
+      !from ||
+      !to ||
+      !amounts ||
+      !srcChains ||
+      !destChain ||
+      !nonces ||
+      !deadline ||
+      !signature ||
+      !chainId
+    ) {
+      throw new Error("Missing parameters");
+    }
+
+    const currentChain = getChain(chainId);
+
+    const {
+      gasEstimate,
+      gasPrice,
+      ethGas,
+      baseGas,
+      estimateFees,
+      hopFees,
+      hopUSDCFees,
+    } = await getMultiToSingleTransferEstimates(
+      currentChain,
+      SigmaUSDCVault,
+      SigmaHop,
+      from,
+      to,
+      amounts,
+      srcChains,
+      destChain,
+      nonces,
       deadline,
       signature
     );
