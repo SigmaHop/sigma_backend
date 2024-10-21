@@ -20,6 +20,10 @@ app.use("/api/deploy", deployRouter);
 import transferRouter from "./routes/transfer.js";
 app.use("/api/transfer", transferRouter);
 
+//Gas Route
+import gasRouter from "./routes/gas.js";
+app.use("/api/gas", gasRouter);
+
 // Listen for requests
 app.listen(PORT, () => {
   console.log(`Sigma Backend is running on port ${PORT}`);
