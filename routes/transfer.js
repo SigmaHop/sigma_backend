@@ -9,6 +9,26 @@ import {
 import { ethers } from "ethers";
 const router = express.Router();
 
+router.get("/signer", async (req, res) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(
+      "https://rpc.ankr.com/avalanche_fuji"
+    );
+
+    const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+    res.json({
+      success: true,
+      address: signer.address,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 router.post("/local/:chainId", async (req, res) => {
   try {
     const { chainId } = req.params;
@@ -135,7 +155,7 @@ router.post("/local/:chainId", async (req, res) => {
         to: currentChain.deployments.OpenBatchExecutor,
         data: txData,
         value: 0,
-        gasLimit: 2000000,
+        gasLimit: 4000000,
         gasPrice: gasPrice,
       };
     }
@@ -212,7 +232,7 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
       estimateFees,
       hopFees,
       hopUSDCFees,
-    } = getSingleToMultiTransferEstimates(
+    } = await getSingleToMultiTransferEstimates(
       currentChain,
       SigmaUSDCVault,
       sigmaHop,
@@ -249,7 +269,7 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
         to: currentChain.deployments.SigmaForwarder,
         data: data,
         value: hopFees.toFixed(0),
-        gasLimit: 2000000,
+        gasLimit: 3000000,
         gasPrice: gasPrice,
       };
     } else {
@@ -308,7 +328,7 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
         to: currentChain.deployments.OpenBatchExecutor,
         data: txData,
         value: hopFees.toFixed(0),
-        gasLimit: 2000000,
+        gasLimit: 4000000,
         gasPrice: gasPrice,
       };
     }
@@ -329,6 +349,7 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
       transactionHash: transaction.hash,
     });
   } catch (error) {
+    console.log(error);
     res.json({
       success: false,
       message: error.message,
@@ -428,7 +449,7 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
         to: currentChain.deployments.SigmaForwarder,
         data: data,
         value: hopFees.toFixed(0),
-        gasLimit: 2000000,
+        gasLimit: 4000000,
         gasPrice: gasPrice,
       };
     } else {
@@ -489,7 +510,7 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
         to: currentChain.deployments.OpenBatchExecutor,
         data: txData,
         value: hopFees.toFixed(0),
-        gasLimit: 2000000,
+        gasLimit: 4000000,
         gasPrice: gasPrice,
       };
     }

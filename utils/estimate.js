@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { abis } from "../lib/config.js";
 import { ethToErc20 } from "./convert.js";
-import { getChain } from "./helper.js";
+import { getChain, getWormholeChain } from "./helper.js";
 
 const getTransferLocalEstimates = async (
   currentChain,
@@ -75,16 +75,10 @@ const getTransferLocalEstimates = async (
       gasLimit: 2000000,
     };
   } else {
-    const data = SigmaForwarder.interface.encodeFunctionData("transferLocal", [
-      SigmaUSDCVault,
-      from,
-      to,
-      amount,
-      deadline,
-      signature,
-      "0",
-      "0",
-    ]);
+    const data = SigmaForwarder.interface.encodeFunctionData(
+      "tranferTokensLocal",
+      [SigmaUSDCVault, from, to, amount, deadline, signature, "0", "0"]
+    );
 
     transaction = {
       to: currentChain.deployments.SigmaForwarder,
@@ -141,10 +135,10 @@ const getSingleToMultiTransferEstimates = async (
   let totalHopFees = 0;
 
   await Promise.all(
-    destchains.forEach(async (chainId) => {
+    destchains.map(async (chainId) => {
       if (chainId === currentChain.wormhole.chainId) return;
 
-      const chain = getChain(chainId);
+      const chain = getWormholeChain(chainId);
 
       const SigmaHopContract = new ethers.Contract(
         sigmaHop,

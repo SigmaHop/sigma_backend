@@ -126,7 +126,7 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
       estimateFees,
       hopFees,
       hopUSDCFees,
-    } = getSingleToMultiTransferEstimates(
+    } = await getSingleToMultiTransferEstimates(
       currentChain,
       SigmaUSDCVault,
       sigmaHop,
