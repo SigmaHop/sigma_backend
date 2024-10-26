@@ -51,6 +51,12 @@ router.post("/local/:chainId", async (req, res) => {
 
     const provider = new ethers.providers.JsonRpcProvider(currentChain.rpcUrl);
 
+    const feeData = await provider.getFeeData();
+    const baseFee = feeData.lastBaseFeePerGas;
+
+    const maxPriorityFeePerGas = ethers.BigNumber.from(1); // 1 wei minimum required tip
+    const maxFeePerGas = baseFee.add(maxPriorityFeePerGas); // base fee + minimum tip
+
     const isDeployed = await provider.getCode(SigmaUSDCVault);
 
     const SigmaForwarder = new ethers.Contract(
@@ -98,8 +104,10 @@ router.post("/local/:chainId", async (req, res) => {
         to: currentChain.deployments.SigmaForwarder,
         data: data,
         value: 0,
-        gasLimit: 2000000,
-        gasPrice: gasPrice,
+        gasLimit: 3000000,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        type: 2,
       };
     } else {
       const OpenBatchExecutor = new ethers.Contract(
@@ -155,8 +163,10 @@ router.post("/local/:chainId", async (req, res) => {
         to: currentChain.deployments.OpenBatchExecutor,
         data: txData,
         value: 0,
-        gasLimit: 4000000,
-        gasPrice: gasPrice,
+        gasLimit: 3000000,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        type: 2,
       };
     }
 
@@ -216,6 +226,12 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
 
     const provider = new ethers.providers.JsonRpcProvider(currentChain.rpcUrl);
 
+    const feeData = await provider.getFeeData();
+    const baseFee = feeData.lastBaseFeePerGas;
+
+    const maxPriorityFeePerGas = ethers.BigNumber.from(1); // 1 wei minimum required tip
+    const maxFeePerGas = baseFee.add(maxPriorityFeePerGas); // base fee + minimum tip
+
     const isDeployed = await provider.getCode(SigmaUSDCVault);
 
     const SigmaForwarder = new ethers.Contract(
@@ -270,7 +286,9 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
         data: data,
         value: hopFees.toFixed(0),
         gasLimit: 3000000,
-        gasPrice: gasPrice,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        type: 2,
       };
     } else {
       const OpenBatchExecutor = new ethers.Contract(
@@ -328,8 +346,10 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
         to: currentChain.deployments.OpenBatchExecutor,
         data: txData,
         value: hopFees.toFixed(0),
-        gasLimit: 4000000,
-        gasPrice: gasPrice,
+        gasLimit: 3000000,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        type: 2,
       };
     }
 
@@ -394,6 +414,12 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
 
     const provider = new ethers.providers.JsonRpcProvider(currentChain.rpcUrl);
 
+    const feeData = await provider.getFeeData();
+    const baseFee = feeData.lastBaseFeePerGas;
+
+    const maxPriorityFeePerGas = ethers.BigNumber.from(1); // 1 wei minimum required tip
+    const maxFeePerGas = baseFee.add(maxPriorityFeePerGas); // base fee + minimum tip
+
     const isDeployed = await provider.getCode(SigmaUSDCVault);
 
     const {
@@ -420,13 +446,15 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
 
     let unsignedTx;
 
-    if (isDeployed !== "0x") {
-      const SigmaForwarder = new ethers.Contract(
-        currentChain.deployments.SigmaForwarder,
-        abis.SigmaForwarder,
-        provider
-      );
+    const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
+    const SigmaForwarder = new ethers.Contract(
+      currentChain.deployments.SigmaForwarder,
+      abis.SigmaForwarder,
+      provider
+    );
+
+    if (isDeployed !== "0x") {
       const data = SigmaForwarder.interface.encodeFunctionData(
         "multiToSingleTransferToken",
         [
@@ -450,7 +478,9 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
         data: data,
         value: hopFees.toFixed(0),
         gasLimit: 4000000,
-        gasPrice: gasPrice,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        type: 2,
       };
     } else {
       const OpenBatchExecutor = new ethers.Contract(
@@ -511,7 +541,9 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
         data: txData,
         value: hopFees.toFixed(0),
         gasLimit: 4000000,
-        gasPrice: gasPrice,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        type: 2,
       };
     }
 

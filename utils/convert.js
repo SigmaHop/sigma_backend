@@ -6,7 +6,7 @@ const ethToErc20 = async (id, convert_id, amount) => {
     "X-CMC_PRO_API_KEY": process.env.COIN_MARKET_CAP_API_KEY,
   };
 
-  const formatAmount = ethers.utils.formatEther(amount);
+  const formatAmount = ethers.utils.formatEther(amount.toString());
 
   const response = await axios.get(
     `https://pro-api.coinmarketcap.com/v2/tools/price-conversion?amount=1&convert_id=${convert_id}&id=${id}`,

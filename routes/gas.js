@@ -224,6 +224,7 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
       hopUSDCFees,
     });
   } catch (error) {
+    console.log(error);
     res.json({
       success: false,
       message: error.message,
