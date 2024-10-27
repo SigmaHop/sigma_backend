@@ -104,9 +104,10 @@ router.post("/local/:chainId", async (req, res) => {
         to: currentChain.deployments.SigmaForwarder,
         data: data,
         value: 0,
-        gasLimit: 3000000,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
+        gasLimit: 4000000,
+        maxFeePerGas: Number(chainId) === 84532 ? null : maxFeePerGas,
+        maxPriorityFeePerGas:
+          Number(chainId) === 84532 ? null : maxPriorityFeePerGas,
         type: 2,
       };
     } else {
@@ -163,9 +164,10 @@ router.post("/local/:chainId", async (req, res) => {
         to: currentChain.deployments.OpenBatchExecutor,
         data: txData,
         value: 0,
-        gasLimit: 3000000,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
+        gasLimit: 4000000,
+        maxFeePerGas: Number(chainId) === 84532 ? null : maxFeePerGas,
+        maxPriorityFeePerGas:
+          Number(chainId) === 84532 ? null : maxPriorityFeePerGas,
         type: 2,
       };
     }
@@ -186,6 +188,7 @@ router.post("/local/:chainId", async (req, res) => {
       transactionHash: transaction.hash,
     });
   } catch (error) {
+    console.log(error);
     res.json({
       success: false,
       message: error.message,
@@ -278,6 +281,7 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
           signature,
           gasPrice.toFixed(0),
           (Number(gasEstimate) + Number(baseGas)).toString(),
+          hopUSDCFees.toFixed(0),
         ]
       );
 
@@ -285,9 +289,10 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
         to: currentChain.deployments.SigmaForwarder,
         data: data,
         value: hopFees.toFixed(0),
-        gasLimit: 3000000,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
+        gasLimit: 4000000,
+        maxFeePerGas: Number(chainId) === 84532 ? null : maxFeePerGas,
+        maxPriorityFeePerGas:
+          Number(chainId) === 84532 ? null : maxPriorityFeePerGas,
         type: 2,
       };
     } else {
@@ -321,6 +326,7 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
           signature,
           gasPrice.toFixed(0),
           (Number(gasEstimate) + Number(baseGas)).toString(),
+          hopUSDCFees.toFixed(0),
         ]
       );
 
@@ -346,9 +352,10 @@ router.post("/singleToMulti/:chainId", async (req, res) => {
         to: currentChain.deployments.OpenBatchExecutor,
         data: txData,
         value: hopFees.toFixed(0),
-        gasLimit: 3000000,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
+        gasLimit: 4000000,
+        maxFeePerGas: Number(chainId) === 84532 ? null : maxFeePerGas,
+        maxPriorityFeePerGas:
+          Number(chainId) === 84532 ? null : maxPriorityFeePerGas,
         type: 2,
       };
     }
@@ -470,6 +477,7 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
           signature,
           gasPrice.toFixed(0),
           (Number(gasEstimate) + Number(baseGas)).toString(),
+          hopUSDCFees.toFixed(0),
         ]
       );
 
@@ -478,8 +486,9 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
         data: data,
         value: hopFees.toFixed(0),
         gasLimit: 4000000,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
+        maxFeePerGas: Number(chainId) === 84532 ? null : maxFeePerGas,
+        maxPriorityFeePerGas:
+          Number(chainId) === 84532 ? null : maxPriorityFeePerGas,
         type: 2,
       };
     } else {
@@ -515,6 +524,7 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
           signature,
           gasPrice.toFixed(0),
           (Number(gasEstimate) + Number(baseGas)).toString(),
+          hopUSDCFees.toFixed(0),
         ]
       );
 
@@ -541,8 +551,9 @@ router.post("/multiToSingle/:chainId", async (req, res) => {
         data: txData,
         value: hopFees.toFixed(0),
         gasLimit: 4000000,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
+        maxFeePerGas: Number(chainId) === 84532 ? null : maxFeePerGas,
+        maxPriorityFeePerGas:
+          Number(chainId) === 84532 ? null : maxPriorityFeePerGas,
         type: 2,
       };
     }

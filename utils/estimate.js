@@ -187,6 +187,7 @@ const getSingleToMultiTransferEstimates = async (
         signature,
         "0",
         "0",
+        "0",
       ]
     );
 
@@ -226,6 +227,7 @@ const getSingleToMultiTransferEstimates = async (
         destchains,
         deadline,
         signature,
+        "0",
         "0",
         "0",
       ]
@@ -343,6 +345,7 @@ const getMultiToSingleTransferEstimates = async (
         signature,
         "0",
         "0",
+        "0",
       ]
     );
 
@@ -384,6 +387,7 @@ const getMultiToSingleTransferEstimates = async (
         nonces,
         deadline,
         signature,
+        "0",
         "0",
         "0",
       ]
