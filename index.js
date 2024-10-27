@@ -24,6 +24,11 @@ app.use("/api/transfer", transferRouter);
 import gasRouter from "./routes/gas.js";
 app.use("/api/gas", gasRouter);
 
+//Public Route
+app.get("/", (req, res) => {
+  res.send("Sigma Hop Backend is running");
+});
+
 // Listen for requests
 app.listen(PORT, () => {
   console.log(`Sigma Backend is running on port ${PORT}`);
